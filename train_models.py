@@ -34,9 +34,9 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# -------------------------------
+
 # Train Models
-# -------------------------------
+
 rf = RandomForestRegressor(n_estimators=100, random_state=42)
 rf.fit(X_train_scaled, y_train)
 
@@ -49,7 +49,7 @@ trainset = data.build_full_trainset()
 svd = SVD()
 svd.fit(trainset)
 
-# Save Models (in same env)
+# Save Models
 
 joblib.dump(rf, "random_forest_model.pkl")
 joblib.dump(xgb, "xgboost_model.pkl")

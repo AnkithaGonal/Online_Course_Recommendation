@@ -5,5 +5,4 @@ scikit-learn==1.4.2
 xgboost==2.0.3
 scipy
 joblib
-scikit-surprise
 openpyxl

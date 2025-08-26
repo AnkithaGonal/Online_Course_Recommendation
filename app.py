@@ -3,9 +3,9 @@ import pandas as pd
 import joblib
 import pickle
 
-# --------------------------
+
 # Load Data & Models
-# --------------------------
+
 @st.cache_resource
 def load_models():
     rf_model = joblib.load("random_forest_model.pkl")
@@ -24,9 +24,9 @@ def load_models():
 
 df, df_encoded, rf_model, xgb_model, scaler, encoders = load_models()
 
-# --------------------------
+
 # Recommendation Function
-# --------------------------
+
 def hybrid_recommend(user_id, top_n=5, difficulty=None, certification=None):
     if "user_id" not in df_encoded.columns:
         return pd.DataFrame({"Error": ["user_id column not found in df_encoded"]})
@@ -41,7 +41,7 @@ def hybrid_recommend(user_id, top_n=5, difficulty=None, certification=None):
     if candidate_courses.empty:
         return pd.DataFrame({"Error": ["No new courses to recommend"]})
 
-    # ✅ Use the same features as in training
+    # features
     feature_names = scaler.feature_names_in_
     X = candidate_courses[feature_names]
 
@@ -55,7 +55,7 @@ def hybrid_recommend(user_id, top_n=5, difficulty=None, certification=None):
     # Hybrid score
     candidate_courses["pred_score"] = 0.5 * rf_preds + 0.5 * xgb_preds
 
-    # ✅ Merge with df to get human-readable fields (avoids inverse_transform length issues)
+    # Merge with df to get human-readable fields 
     recs = candidate_courses.merge(
         df[
             [
@@ -72,7 +72,7 @@ def hybrid_recommend(user_id, top_n=5, difficulty=None, certification=None):
         how="left"
     )
 
-    # Apply filters safely
+    # Apply filters 
     if difficulty and "difficulty_level" in recs.columns:
         recs = recs[recs["difficulty_level"] == difficulty]
     if certification and "certification_offered" in recs.columns:
@@ -83,9 +83,9 @@ def hybrid_recommend(user_id, top_n=5, difficulty=None, certification=None):
     return recs.head(top_n)
 
 
-# --------------------------
+
 # Streamlit UI
-# --------------------------
+
 st.title("🎓 Online Course Recommendation System")
 
 user_id = st.number_input("Enter User ID:", min_value=1, step=1)
@@ -112,7 +112,7 @@ if st.button("Get Recommendations"):
     else:
         st.subheader("✅ Recommended Courses:")
 
-        # ✅ Show only columns that actually exist
+
         display_cols = [
             "course_id",
             "course_name",
